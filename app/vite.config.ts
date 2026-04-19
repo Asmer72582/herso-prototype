@@ -9,6 +9,13 @@ export default defineConfig({
   plugins: [inspectAttr(), react()],
   server: {
     port: 8000,
+    proxy: {
+      '/_/backend': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/_\/backend/, ''),
+      },
+    },
   },
   resolve: {
     alias: {
