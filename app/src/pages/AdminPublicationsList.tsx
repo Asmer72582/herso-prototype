@@ -76,7 +76,7 @@ export default function AdminPublicationsList() {
     setEditingPub(null);
     setForm({
       title: '', volume: '', issue: '', month: '', year: new Date().getFullYear(),
-      type: 'online', description: '', coverImage: '', pdfUrl: '', isPublished: true
+      type: 'online', description: '', coverImage: '', isPublished: true
     });
     setShowModal(true);
   };
