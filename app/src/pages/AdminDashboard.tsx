@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   BookOpen, Bell, Image, MessageSquare,
-  Plus, Edit, Trash2, X
+  Plus, Edit, Trash2, X, Save, BarChart3, Upload,
+  UserPlus
 } from 'lucide-react';
 
 interface Article {
