@@ -1,0 +1,173 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-navy: #001233;
+    --color-parchment: #FDF6E3;
+    --color-gold: #D4A373;
+    --color-slate: #6C757D;
+    --text-primary-dark: #001233;
+    --text-primary-light: #FDF6E3;
+    --text-muted: #6C757D;
+    --text-accent: #D4A373;
+
+    --background: 0 0% 100%;
+    --foreground: 210 100% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 210 100% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 100% 10%;
+    --primary: 210 100% 10%;
+    --primary-foreground: 45 80% 94%;
+    --secondary: 45 80% 94%;
+    --secondary-foreground: 210 100% 10%;
+    --muted: 210 10% 90%;
+    --muted-foreground: 210 5% 46%;
+    --accent: 30 45% 64%;
+    --accent-foreground: 210 100% 10%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 210 10% 85%;
+    --input: 210 10% 85%;
+    --ring: 30 45% 64%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--color-parchment);
+    color: var(--color-navy);
+    overflow-x: hidden;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cinzel', serif;
+  }
+}
+
+@layer components {
+  .font-cinzel {
+    font-family: 'Cinzel', serif;
+  }
+  .font-inter {
+    font-family: 'Inter', sans-serif;
+  }
+  .bg-navy {
+    background-color: var(--color-navy);
+  }
+  .bg-parchment {
+    background-color: var(--color-parchment);
+  }
+  .text-navy {
+    color: var(--color-navy);
+  }
+  .text-parchment {
+    color: var(--color-parchment);
+  }
+  .text-gold {
+    color: var(--color-gold);
+  }
+  .border-gold {
+    border-color: var(--color-gold);
+  }
+  .hover-gold:hover {
+    color: var(--color-gold);
+  }
+
+  /* Hero text shadow for readability */
+  .hero-text-shadow {
+    text-shadow: 0 4px 24px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Announcement list styling */
+  .announcement-item {
+    @apply py-2 border-b border-gray-200 transition-colors;
+  }
+  .announcement-item:hover {
+    color: var(--color-gold);
+  }
+
+  /* Gold button */
+  .btn-gold {
+    @apply px-6 py-2 bg-transparent border border-[#D4A373] text-[#D4A373] transition-all duration-300;
+  }
+  .btn-gold:hover {
+    @apply bg-[#D4A373] text-[#001233];
+  }
+
+  /* Glassmorphism card */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(212, 163, 115, 0.2);
+  }
+
+  /* Management table */
+  .management-table th {
+    @apply bg-[#001233] text-[#FDF6E3] px-4 py-3 text-left font-cinzel;
+  }
+  .management-table td {
+    @apply px-4 py-3 border-b;
+  }
+  .management-table tr:nth-child(even) {
+    @apply bg-[#f5efe0];
+  }
+
+  /* Gallery grid */
+  .gallery-item {
+    @apply overflow-hidden rounded-lg cursor-pointer transition-transform duration-300;
+  }
+  .gallery-item:hover {
+    @apply scale-105;
+  }
+  .gallery-item img {
+    @apply w-full h-full object-cover transition-transform duration-500;
+  }
+  .gallery-item:hover img {
+    @apply scale-110;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-parchment);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-navy);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gold);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
