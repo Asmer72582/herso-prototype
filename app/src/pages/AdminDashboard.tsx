@@ -107,11 +107,12 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleFileUpload = async (file: File) => {
+  const handleFileUpload = async (file: File, isPdf = false) => {
     const formData = new FormData();
     formData.append('file', file);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/upload`, {
+      const endpoint = isPdf ? '/admin/upload-pdf' : '/admin/upload';
+      const res = await fetch(`${import.meta.env.VITE_API_URL}${endpoint}`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
         body: formData
@@ -613,7 +614,7 @@ export default function AdminDashboard() {
                               accept=".pdf"
                               onChange={async (e) => {
                                 if (e.target.files?.[0]) {
-                                  const url = await handleFileUpload(e.target.files[0]);
+                                  const url = await handleFileUpload(e.target.files[0], true);
                                   if (url) {
                                     const newArticles = [...pubForm.articles];
                                     newArticles[idx].pdfUrl = url;
