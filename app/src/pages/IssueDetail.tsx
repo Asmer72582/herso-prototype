@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { BookOpen, Calendar, Download, FileText, ArrowLeft, User } from 'lucide-react';
+import { Download, FileText, ArrowLeft, User } from 'lucide-react';
 
 interface Article {
   _id: string;

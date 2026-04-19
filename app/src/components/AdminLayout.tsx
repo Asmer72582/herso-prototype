@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
-import { 
-  LayoutDashboard, BookOpen, Bell, FileText, LogOut, Loader2, Image as ImageIcon, Layout
-} from 'lucide-react';
+import { LayoutDashboard, BookOpen, Bell, LogOut, Loader2, Image as ImageIcon, Layout } from 'lucide-react';
 
 export default function AdminLayout() {
   const navigate = useNavigate();

@@ -215,7 +215,7 @@ export default function Home() {
             >
               <h2 className="font-cinzel text-2xl text-[#001233] mb-6">Latest Publications</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                {latestPubs.slice(0, 4).map((pub, index) => (
+                {latestPubs.slice(0, 4).map((pub) => (
                   <Link key={pub._id} to={`/jhers/${pub._id}`} className="group cursor-pointer">
                     <div className="overflow-hidden rounded-lg shadow-md mb-3 aspect-[3/4]">
                       <img

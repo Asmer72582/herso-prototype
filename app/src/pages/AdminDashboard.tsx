@@ -2,9 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  LayoutDashboard, BookOpen, Bell, Image, MessageSquare,
-  LogOut, Plus, Edit, Trash2, X, Save, BarChart3, Upload,
-  UserPlus, FileText
+  BookOpen, Bell, Image, MessageSquare,
+  Plus, Edit, Trash2, X
 } from 'lucide-react';
 
 interface Article {
@@ -99,41 +98,12 @@ export default function AdminDashboard() {
       if (annsData.success) setAnnouncements(annsData.announcements);
       if (statsData.success) setStats(statsData.stats);
     } catch {
-      // Use mock data if API fails
-      setPublications([
-        // { _id: '1', title: 'JHERS October 2025', volume: 'Vol. 13', issue: 'Issue 2', month: 'October', year: 2025, type: 'online', description: 'Latest issue', coverImage: '/journal-cover-1.jpg', isPublished: true, createdAt: '2025-10-01' },
-        // { _id: '2', title: 'JHERS April 2025', volume: 'Vol. 13', issue: 'Issue 1', month: 'April', year: 2025, type: 'online', description: 'April issue', coverImage: '/journal-cover-2.jpg', isPublished: true, createdAt: '2025-04-01' },
-      ]);
+      setPublications([]);
       setAnnouncements([
         { _id: '1', title: 'JHERS October 2025 Published', content: 'Latest issue published', category: 'journal', isActive: true, createdAt: '2025-10-01' },
       ]);
       setStats({ totalPublications: 5, totalAnnouncements: 4, totalGalleryImages: 3, totalMessages: 0 });
     }
-  };
-
-  const handleFileUpload = async (file: File) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/upload`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` },
-        body: formData
-      });
-      const data = await res.json();
-      if (data.success) return data.url;
-      throw new Error(data.error);
-    } catch (error) {
-      console.error('Upload error:', error);
-      alert('File upload failed');
-      return null;
-    }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('adminToken');
-    localStorage.removeItem('adminUser');
-    navigate('/admin/login');
   };
 
   const savePublication = async () => {
@@ -215,13 +185,6 @@ export default function AdminDashboard() {
     setAnnForm({ title: ann.title, content: ann.content, category: ann.category, isActive: ann.isActive });
     setShowAnnModal(true);
   };
-
-  const tabs = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'publications', label: 'Publications', icon: BookOpen },
-    { id: 'papers', label: 'Manage Papers', icon: FileText },
-    { id: 'announcements', label: 'Announcements', icon: Bell },
-  ];
 
   return (
     <div className="p-6 h-full">

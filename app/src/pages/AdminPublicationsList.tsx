@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Plus, Edit, Trash2, BookOpen, X, Save, Upload, Link as LinkIcon,
+  Plus, Edit, Trash2, X, Save, Upload, Link as LinkIcon,
   Search, SlidersHorizontal
 } from 'lucide-react';
 
@@ -39,7 +39,7 @@ export default function AdminPublicationsList() {
 
   const [form, setForm] = useState({
     title: '', volume: '', issue: '', month: '', year: new Date().getFullYear(),
-    type: 'online', description: '', coverImage: '', pdfUrl: '', isPublished: true
+    type: 'online', description: '', coverImage: '', isPublished: true
   });
 
   useEffect(() => {
@@ -86,7 +86,7 @@ export default function AdminPublicationsList() {
     setForm({
       title: pub.title, volume: pub.volume, issue: pub.issue, month: pub.month,
       year: pub.year, type: pub.type, description: pub.description,
-      coverImage: pub.coverImage, pdfUrl: pub.pdfUrl || '', isPublished: pub.isPublished
+      coverImage: pub.coverImage, isPublished: pub.isPublished
     });
     setShowModal(true);
   };

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Plus, Edit, Trash2, X, Save, Upload, GripVertical, ChevronUp, ChevronDown
+  Plus, Edit, Trash2, X, Save, Upload, ChevronUp, ChevronDown
 } from 'lucide-react';
 
 interface HeroSlide {

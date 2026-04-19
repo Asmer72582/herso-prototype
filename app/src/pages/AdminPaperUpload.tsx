@@ -5,7 +5,7 @@ import mammoth from 'mammoth';
 import { 
   ArrowLeft, Plus, Edit, Trash2, FileText, Upload, 
   Save, X, Download, User, Hash, AlignLeft, Loader2, CheckCircle2,
-  FileCode, Globe, Cloud, FileStack
+  FileStack
 } from 'lucide-react';
 
 interface Article {
@@ -34,7 +34,7 @@ export default function AdminPaperUpload() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [showImportModal, setShowImportModal] = useState(false);
+
   const [importing, setImporting] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   
@@ -141,7 +141,7 @@ export default function AdminPaperUpload() {
         setPublication({ ...publication, articles: newArticles });
         alert(`Successfully imported Word document: ${title}`);
       }
-      setShowImportModal(false);
+
     } catch (err: any) {
       alert(err.message || "Failed to parse Word document.");
     } finally {
