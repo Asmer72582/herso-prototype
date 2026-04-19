@@ -28,15 +28,18 @@ app.use('/api/admin', require('./src/routes/admin'));
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI;
 
-mongoose.connect(MONGODB_URI)
-  .then(() => {
-    console.log('MongoDB connected');
-    seedDatabase();
-  })
-  .catch(err => {
-    console.error('MongoDB connection error:', err);
-    console.log('Starting server without database...');
-  });
+if (!MONGODB_URI) {
+  console.error('CRITICAL: MONGODB_URI is not defined in environment variables!');
+} else {
+  mongoose.connect(MONGODB_URI)
+    .then(() => {
+      console.log('MongoDB connected successfully');
+      seedDatabase();
+    })
+    .catch(err => {
+      console.error('MongoDB connection error:', err);
+    });
+}
 
 // Seed database with initial data
 async function seedDatabase() {
