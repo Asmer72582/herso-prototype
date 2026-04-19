@@ -29,8 +29,9 @@ app.use('/api/admin', require('./src/routes/admin'));
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
-  console.error('CRITICAL: MONGODB_URI is not defined!');
+  console.error('CRITICAL ERROR: MONGODB_URI is totally missing from Vercel Environment Variables!');
 } else {
+  console.log('MONGODB_URI is present. Length:', MONGODB_URI.length, 'Starting with:', MONGODB_URI.substring(0, 10));
   mongoose.connect(MONGODB_URI, {
     serverSelectionTimeoutMS: 5000, // Timeout after 5 seconds instead of 30
     socketTimeoutMS: 45000,
