@@ -1,3 +1,4 @@
+const express = require('express');
 const Publication = require('../models/Publication');
 const connectDB = require('../config/db');
 const router = express.Router();
