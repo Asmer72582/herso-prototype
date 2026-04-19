@@ -26,7 +26,7 @@ app.use('/api/hero', require('./src/routes/hero'));
 app.use('/api/admin', require('./src/routes/admin'));
 
 // MongoDB connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/herso';
+const MONGODB_URI = process.env.MONGODB_URI;
 
 mongoose.connect(MONGODB_URI)
   .then(() => {

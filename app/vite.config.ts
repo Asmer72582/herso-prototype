@@ -10,10 +10,9 @@ export default defineConfig({
   server: {
     port: 8000,
     proxy: {
-      '/_/backend': {
-        target: 'http://localhost:3001',
+      '/api': {
+        target: 'https://herso-prototype-backend.vercel.app',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/_\/backend/, ''),
       },
     },
   },
