@@ -35,6 +35,7 @@ export default function AdminPaperUpload() {
   const [saving, setSaving] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
+  const [uploading, setUploading] = useState(false);
   const [importing, setImporting] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   
@@ -75,6 +76,7 @@ export default function AdminPaperUpload() {
   const handleFileUpload = async (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
+    setUploading(true);
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/upload-pdf`, {
         method: 'POST',
@@ -86,8 +88,11 @@ export default function AdminPaperUpload() {
         setPaperForm(prev => ({ ...prev, pdfUrl: data.url }));
         return data.url;
       }
-    } catch {
-      alert('Upload failed');
+      throw new Error(data.error || 'Upload failed');
+    } catch (error: any) {
+      alert('Upload failed: ' + error.message);
+    } finally {
+      setUploading(false);
     }
     return null;
   };
@@ -472,15 +477,22 @@ export default function AdminPaperUpload() {
                         onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])}
                       />
                       <label 
-                        htmlFor="modal-pdf-upload"
-                        className={`flex items-center justify-center gap-2 px-4 py-2.5 border-2 border-dashed rounded-xl text-sm font-medium cursor-pointer transition-all ${
+                        htmlFor={uploading ? undefined : "modal-pdf-upload"}
+                        className={`flex items-center justify-center gap-2 px-4 py-2.5 border-2 border-dashed rounded-xl text-sm font-medium transition-all ${
+                          uploading ? 'bg-gray-50 border-gray-200 text-gray-400 cursor-not-allowed' :
                           paperForm.pdfUrl 
-                          ? 'bg-green-50 border-green-200 text-green-700' 
-                          : 'border-gray-200 text-gray-400 hover:bg-gray-50'
+                          ? 'bg-green-50 border-green-200 text-green-700 cursor-pointer' 
+                          : 'border-gray-200 text-gray-400 hover:bg-gray-50 cursor-pointer'
                         }`}
                       >
-                        {paperForm.pdfUrl ? <CheckCircle2 size={16} /> : <Upload size={16} />}
-                        {paperForm.pdfUrl ? 'Paper Uploaded' : 'Select PDF File'}
+                        {uploading ? (
+                          <div className="w-4 h-4 border-2 border-[#D4A373]/20 border-t-[#D4A373] rounded-full animate-spin" />
+                        ) : paperForm.pdfUrl ? (
+                          <CheckCircle2 size={16} />
+                        ) : (
+                          <Upload size={16} />
+                        )}
+                        {uploading ? 'Uploading PDF...' : paperForm.pdfUrl ? 'Paper Uploaded' : 'Select PDF File'}
                       </label>
                     </div>
                   </div>
