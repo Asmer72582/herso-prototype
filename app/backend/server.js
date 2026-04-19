@@ -25,21 +25,41 @@ app.use('/api/contact', require('./src/routes/contact'));
 app.use('/api/hero', require('./src/routes/hero'));
 app.use('/api/admin', require('./src/routes/admin'));
 
-// MongoDB connection
+// MongoDB connection with optimized settings for Vercel
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
-  console.error('CRITICAL: MONGODB_URI is not defined in environment variables!');
+  console.error('CRITICAL: MONGODB_URI is not defined!');
 } else {
-  mongoose.connect(MONGODB_URI)
+  mongoose.connect(MONGODB_URI, {
+    serverSelectionTimeoutMS: 5000, // Timeout after 5 seconds instead of 30
+    socketTimeoutMS: 45000,
+  })
     .then(() => {
       console.log('MongoDB connected successfully');
+      // Only seed in non-production or if explicitly requested
       seedDatabase();
     })
     .catch(err => {
-      console.error('MongoDB connection error:', err);
+      console.error('MongoDB connection error details:', {
+        message: err.message,
+        code: err.code,
+        name: err.name
+      });
     });
 }
+
+// Global connection state check middleware
+app.use((req, res, next) => {
+  if (mongoose.connection.readyState !== 1) {
+    return res.status(503).json({
+      success: false,
+      error: 'Database connection is not ready. Please check your MONGODB_URI and Network Access (0.0.0.0/0) in Atlas.',
+      state: mongoose.connection.readyState
+    });
+  }
+  next();
+});
 
 // Seed database with initial data
 async function seedDatabase() {
