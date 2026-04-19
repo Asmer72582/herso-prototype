@@ -11,7 +11,7 @@
       "destination": "https://herso-prototype-backend.vercel.app/uploads/$1"
     },
     {
-      "source": "/((?!assets/|favicon.ico|.*\\.js|.*\\.css|.*\\.png|.*\\.jpg|.*\\.svg).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
