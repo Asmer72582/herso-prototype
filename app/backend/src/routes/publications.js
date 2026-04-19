@@ -1,10 +1,11 @@
-const express = require('express');
 const Publication = require('../models/Publication');
+const connectDB = require('../config/db');
 const router = express.Router();
 
 // Get all publications (public)
 router.get('/', async (req, res) => {
   try {
+    await connectDB();
     const { type, year, page = 1, limit = 10 } = req.query;
     const query = {};
     if (type) query.type = type;
