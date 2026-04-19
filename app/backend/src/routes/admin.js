@@ -5,19 +5,31 @@ const GalleryImage = require('../models/GalleryImage');
 const HeroSlide = require('../models/HeroSlide');
 const ContactMessage = require('../models/ContactMessage');
 const { authMiddleware, adminMiddleware } = require('../middleware/auth');
-const upload = require('../middleware/upload');
+const { upload, uploadPdf } = require('../middleware/upload');
 const router = express.Router();
 
 router.use(authMiddleware, adminMiddleware);
 
-// ===== FILE UPLOAD =====
+// ===== FILE UPLOAD (Images) =====
 router.post('/upload', upload.single('file'), (req, res) => {
   try {
     if (!req.file) {
-      return res.status(400).json({ success: false, error: 'No file uploaded' });
+      return res.status(400).json({ success: false, error: 'No image uploaded' });
     }
-    const fileUrl = `/uploads/${req.file.filename}`;
-    res.json({ success: true, url: fileUrl });
+    // With Cloudinary, path is the full URL
+    res.json({ success: true, url: req.file.path });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ===== FILE UPLOAD (PDFs) =====
+router.post('/upload-pdf', uploadPdf.single('file'), (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, error: 'No PDF uploaded' });
+    }
+    res.json({ success: true, url: req.file.path });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
