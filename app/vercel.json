@@ -1,5 +1,6 @@
 {
   "outputDirectory": "dist",
+  "cleanUrls": true,
   "rewrites": [
     {
       "source": "/api/(.*)",
@@ -10,7 +11,7 @@
       "destination": "https://herso-prototype-backend.vercel.app/uploads/$1"
     },
     {
-      "source": "/(.*)",
+      "source": "/((?!assets/|favicon.ico|.*\\.js|.*\\.css|.*\\.png|.*\\.jpg|.*\\.svg).*)",
       "destination": "/index.html"
     }
   ]
