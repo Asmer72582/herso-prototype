@@ -76,7 +76,7 @@ export default function AdminPaperUpload() {
     const formData = new FormData();
     formData.append('file', file);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/upload`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/upload-pdf`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
         body: formData
@@ -122,7 +122,7 @@ export default function AdminPaperUpload() {
       // First, we need to upload the actual document to the server to get a URL
       const formData = new FormData();
       formData.append('file', file);
-      const uploadRes = await fetch(`${import.meta.env.VITE_API_URL}/admin/upload`, {
+      const uploadRes = await fetch(`${import.meta.env.VITE_API_URL}/admin/upload-pdf`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
         body: formData
