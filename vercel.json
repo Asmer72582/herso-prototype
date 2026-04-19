@@ -1,5 +1,5 @@
 {
-  "outputDirectory": "app/dist",
+  "outputDirectory": "dist",
   "cleanUrls": true,
   "rewrites": [
     {
