@@ -23,8 +23,7 @@ const pdfStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: 'herso/pdfs',
-    resource_type: 'raw',
-    format: 'pdf',
+    resource_type: 'auto',
   }
 });
 
