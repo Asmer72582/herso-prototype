@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
-  BookOpen, Bell, Image, MessageSquare, Plus, BarChart3
+  BookOpen, Bell, Image, MessageSquare, Plus, BarChart3, Users
 } from 'lucide-react';
 
 interface Stats {
@@ -10,6 +10,7 @@ interface Stats {
   totalAnnouncements: number;
   totalGalleryImages: number;
   totalMessages: number;
+  totalManagementMembers?: number;
 }
 
 interface Publication {
@@ -56,6 +57,7 @@ export default function AdminOverview() {
         {[
           { label: 'Publications', value: stats?.totalPublications || 0, icon: BookOpen, color: 'bg-blue-600' },
           { label: 'Announcements', value: stats?.totalAnnouncements || 0, icon: Bell, color: 'bg-green-600' },
+          { label: 'Management', value: stats?.totalManagementMembers || 0, icon: Users, color: 'bg-indigo-600' },
           { label: 'Gallery Images', value: stats?.totalGalleryImages || 0, icon: Image, color: 'bg-purple-600' },
           { label: 'Messages', value: stats?.totalMessages || 0, icon: MessageSquare, color: 'bg-orange-600' },
         ].map((stat) => (
@@ -127,6 +129,16 @@ export default function AdminOverview() {
               </div>
               <span className="block text-sm font-bold text-[#001233]">Post Announcement</span>
               <span className="block text-[10px] text-gray-400 mt-1 uppercase tracking-widest font-bold">Notify Users</span>
+            </button>
+            <button
+              onClick={() => navigate('/admin/management')}
+              className="flex flex-col items-center justify-center p-6 bg-indigo-50/50 border border-indigo-100 rounded-2xl hover:bg-indigo-50 transition-all group text-center"
+            >
+              <div className="w-12 h-12 bg-indigo-600 text-white rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-indigo-600/20 group-hover:scale-110 transition-transform">
+                <Users size={24} />
+              </div>
+              <span className="block text-sm font-bold text-[#001233]">Management Council</span>
+              <span className="block text-[10px] text-gray-400 mt-1 uppercase tracking-widest font-bold">Edit Members</span>
             </button>
             <button
               onClick={() => window.open('/', '_blank')}

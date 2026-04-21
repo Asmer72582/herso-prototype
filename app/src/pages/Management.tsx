@@ -1,18 +1,35 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Sidebar from '../components/Sidebar';
 
-const managementData = [
-  { srNo: 1, name: 'Dr. Sudhir Nikam', designation: 'President' },
-  { srNo: 2, name: 'Dr. Madhavi Nikam', designation: 'Secretary' },
-  { srNo: 3, name: 'Dr. Satyawan Hanegave', designation: 'Treasurer' },
-  { srNo: 4, name: 'Shri. Sharad Rankhamb', designation: 'Vice-President' },
-  { srNo: 5, name: 'Smt. Supriya Rankhamb', designation: 'Jt. Secretary' },
-  { srNo: 6, name: 'Prof. Venkatesh Rankhamb', designation: 'Member' },
-  { srNo: 7, name: 'Prin. Umesh Bagal', designation: 'Member' },
-  { srNo: 8, name: 'Adv. Chaani Srivastava, NewYork-New Delhi', designation: 'Legal Advisor' },
-];
+interface ManagementMember {
+  _id: string;
+  name: string;
+  designation: string;
+  order: number;
+}
 
 export default function Management() {
+  const [managementData, setManagementData] = useState<ManagementMember[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchManagement = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/management`);
+        const data = await res.json();
+        if (data.success) {
+          setManagementData(data.members);
+        }
+      } catch (error) {
+        console.error('Error fetching management:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchManagement();
+  }, []);
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-10">
@@ -34,19 +51,29 @@ export default function Management() {
                 </tr>
               </thead>
               <tbody>
-                {managementData.map((member, index) => (
-                  <motion.tr
-                    key={member.srNo}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    viewport={{ once: true }}
-                  >
-                    <td className="text-center font-semibold">{member.srNo}</td>
-                    <td className="font-medium text-[#001233]">{member.name}</td>
-                    <td className="text-[#6C757D]">{member.designation}</td>
-                  </motion.tr>
-                ))}
+                {loading ? (
+                  <tr>
+                    <td colSpan={3} className="text-center py-10">Loading...</td>
+                  </tr>
+                ) : managementData.length > 0 ? (
+                  managementData.map((member, index) => (
+                    <motion.tr
+                      key={member._id}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      viewport={{ once: true }}
+                    >
+                      <td className="text-center font-semibold">{index + 1}</td>
+                      <td className="font-medium text-[#001233]">{member.name}</td>
+                      <td className="text-[#6C757D]">{member.designation}</td>
+                    </motion.tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={3} className="text-center py-10">No management members found.</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

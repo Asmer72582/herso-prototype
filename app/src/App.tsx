@@ -18,6 +18,7 @@ import AdminPublicationsList from './pages/AdminPublicationsList';
 import AdminPaperUpload from './pages/AdminPaperUpload';
 import AdminGallery from './pages/AdminGallery';
 import AdminHeroSlider from './pages/AdminHeroSlider';
+import AdminManagement from './pages/AdminManagement';
 import IssueDetail from './pages/IssueDetail';
 import NotFound from './pages/NotFound';
 
@@ -48,6 +49,7 @@ function App() {
         <Route path="announcements" element={<AdminOverview />} /> {/* To be implemented later */}
         <Route path="gallery" element={<AdminGallery />} />
         <Route path="hero" element={<AdminHeroSlider />} />
+        <Route path="management" element={<AdminManagement />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

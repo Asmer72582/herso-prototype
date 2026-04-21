@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, Bell, LogOut, Loader2, Image as ImageIcon, Layout } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Bell, LogOut, Loader2, Image as ImageIcon, Layout, Users } from 'lucide-react';
 
 export default function AdminLayout() {
   const navigate = useNavigate();
@@ -28,6 +28,7 @@ export default function AdminLayout() {
     { id: 'announcements', label: 'Announcements', icon: Bell, path: '/admin/announcements' },
     { id: 'gallery', label: 'Gallery', icon: ImageIcon, path: '/admin/gallery' },
     { id: 'hero', label: 'Hero Slider', icon: Layout, path: '/admin/hero' },
+    { id: 'management', label: 'Management', icon: Users, path: '/admin/management' },
   ];
 
   const getActiveTab = () => {
@@ -36,6 +37,7 @@ export default function AdminLayout() {
     if (location.pathname.startsWith('/admin/announcements')) return 'announcements';
     if (location.pathname.startsWith('/admin/gallery')) return 'gallery';
     if (location.pathname.startsWith('/admin/hero')) return 'hero';
+    if (location.pathname.startsWith('/admin/management')) return 'management';
     return 'dashboard';
   };
 

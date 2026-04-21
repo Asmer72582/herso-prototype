@@ -23,6 +23,7 @@ app.use('/api/announcements', require('./src/routes/announcements'));
 app.use('/api/gallery', require('./src/routes/gallery'));
 app.use('/api/contact', require('./src/routes/contact'));
 app.use('/api/hero', require('./src/routes/hero'));
+app.use('/api/management', require('./src/routes/management'));
 app.use('/api/admin', require('./src/routes/admin'));
 
 const connectDB = require('./src/config/db');
@@ -49,6 +50,7 @@ async function seedDatabase() {
     const Publication = require('./src/models/Publication');
     const Announcement = require('./src/models/Announcement');
     const GalleryImage = require('./src/models/GalleryImage');
+    const ManagementMember = require('./src/models/ManagementMember');
 
     // Check if admin exists
     const adminExists = await User.findOne({ username: 'admin' });
@@ -146,6 +148,22 @@ async function seedDatabase() {
         { title: 'Seminar Inauguration 2024', description: 'Inauguration of the academic seminar series', imageUrl: '/gallery-3.jpg', category: 'seminar', eventYear: 2024 }
       ]);
       console.log('Sample gallery images seeded');
+    }
+
+    // Seed management members if none exist
+    const mgtCount = await ManagementMember.countDocuments();
+    if (mgtCount === 0) {
+      await ManagementMember.insertMany([
+        { name: 'Dr. Sudhir Nikam', designation: 'President', order: 1 },
+        { name: 'Dr. Madhavi Nikam', designation: 'Secretary', order: 2 },
+        { name: 'Dr. Satyawan Hanegave', designation: 'Treasurer', order: 3 },
+        { name: 'Shri. Sharad Rankhamb', designation: 'Vice-President', order: 4 },
+        { name: 'Smt. Supriya Rankhamb', designation: 'Jt. Secretary', order: 5 },
+        { name: 'Prof. Venkatesh Rankhamb', designation: 'Member', order: 6 },
+        { name: 'Prin. Umesh Bagal', designation: 'Member', order: 7 },
+        { name: 'Adv. Chaani Srivastava, NewYork-New Delhi', designation: 'Legal Advisor', order: 8 }
+      ]);
+      console.log('Default management members seeded');
     }
 
     console.log('Database seeding complete');

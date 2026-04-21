@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import {
   BookOpen, Bell, Image, MessageSquare,
   Plus, Edit, Trash2, X, Save, BarChart3, Upload,
-  UserPlus
+  UserPlus, Users
 } from 'lucide-react';
 
 interface Article {
@@ -45,6 +45,14 @@ interface Stats {
   totalAnnouncements: number;
   totalGalleryImages: number;
   totalMessages: number;
+  totalManagementMembers?: number;
+}
+
+interface ManagementMember {
+  _id: string;
+  name: string;
+  designation: string;
+  order: number;
 }
 
 export default function AdminDashboard() {
@@ -73,6 +81,10 @@ export default function AdminDashboard() {
     type: 'online', description: '', coverImage: '', isPublished: true, articles: []
   });
   const [annForm, setAnnForm] = useState({ title: '', content: '', category: 'general', isActive: true });
+  const [management, setManagement] = useState<ManagementMember[]>([]);
+  const [showMgtModal, setShowMgtModal] = useState(false);
+  const [editingMgt, setEditingMgt] = useState<ManagementMember | null>(null);
+  const [mgtForm, setMgtForm] = useState({ name: '', designation: '', order: 0 });
 
   const token = localStorage.getItem('adminToken');
 
@@ -87,16 +99,19 @@ export default function AdminDashboard() {
   const fetchData = async () => {
     const headers = { 'Authorization': `Bearer ${token}` };
     try {
-      const [pubsRes, annsRes, statsRes] = await Promise.all([
+      const [pubsRes, annsRes, mgtRes, statsRes] = await Promise.all([
         fetch(`${import.meta.env.VITE_API_URL}/publications`, { headers }),
         fetch(`${import.meta.env.VITE_API_URL}/announcements`, { headers }),
+        fetch(`${import.meta.env.VITE_API_URL}/management`, { headers }),
         fetch(`${import.meta.env.VITE_API_URL}/admin/stats`, { headers })
       ]);
       const pubsData = await pubsRes.json();
       const annsData = await annsRes.json();
+      const mgtData = await mgtRes.json();
       const statsData = await statsRes.json();
       if (pubsData.success) setPublications(pubsData.publications);
       if (annsData.success) setAnnouncements(annsData.announcements);
+      if (mgtData.success) setManagement(mgtData.members);
       if (statsData.success) setStats(statsData.stats);
     } catch {
       setPublications([]);
@@ -221,6 +236,42 @@ export default function AdminDashboard() {
     setShowAnnModal(true);
   };
 
+  const saveManagement = async () => {
+    const headers = {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    };
+    try {
+      if (editingMgt) {
+        await fetch(`${import.meta.env.VITE_API_URL}/management/${editingMgt._id}`, { method: 'PUT', headers, body: JSON.stringify(mgtForm) });
+      } else {
+        await fetch(`${import.meta.env.VITE_API_URL}/management`, { method: 'POST', headers, body: JSON.stringify(mgtForm) });
+      }
+      setShowMgtModal(false);
+      setEditingMgt(null);
+      setMgtForm({ name: '', designation: '', order: 0 });
+      fetchData();
+    } catch {
+      alert('Failed to save management member');
+    }
+  };
+
+  const deleteManagement = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this member?')) return;
+    try {
+      await fetch(`${import.meta.env.VITE_API_URL}/management/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+      fetchData();
+    } catch {
+      alert('Failed to delete member');
+    }
+  };
+
+  const editManagement = (member: ManagementMember) => {
+    setEditingMgt(member);
+    setMgtForm({ name: member.name, designation: member.designation, order: member.order });
+    setShowMgtModal(true);
+  };
+
   return (
     <div className="p-6 h-full">
       <main className="flex-grow">
@@ -232,6 +283,7 @@ export default function AdminDashboard() {
               {[
                 { label: 'Publications', value: stats?.totalPublications || 0, icon: BookOpen, color: 'bg-blue-500' },
                 { label: 'Announcements', value: stats?.totalAnnouncements || 0, icon: Bell, color: 'bg-green-500' },
+                { label: 'Management', value: stats?.totalManagementMembers || 0, icon: Users, color: 'bg-indigo-500' },
                 { label: 'Gallery Images', value: stats?.totalGalleryImages || 0, icon: Image, color: 'bg-purple-500' },
                 { label: 'Messages', value: stats?.totalMessages || 0, icon: MessageSquare, color: 'bg-orange-500' },
               ].map((stat) => (
@@ -281,6 +333,13 @@ export default function AdminDashboard() {
                   >
                     <Plus size={16} className="text-[#D4A373]" />
                     <span className="text-sm text-[#001233]">Add New Announcement</span>
+                  </button>
+                  <button
+                    onClick={() => { setActiveTab('management'); }}
+                    className="w-full flex items-center gap-3 p-3 bg-[#001233]/5 rounded hover:bg-[#001233]/10 transition-colors text-left"
+                  >
+                    <Plus size={16} className="text-[#D4A373]" />
+                    <span className="text-sm text-[#001233]">Add Management Member</span>
                   </button>
                   <button
                     onClick={() => window.open('/', '_blank')}
@@ -420,6 +479,60 @@ export default function AdminDashboard() {
                               <Edit size={14} />
                             </button>
                             <button onClick={() => deleteAnnouncement(ann._id)} className="p-1 text-red-600 hover:bg-red-50 rounded">
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Management Tab */}
+        {activeTab === 'management' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <div className="flex items-center justify-between mb-6">
+              <h1 className="font-cinzel text-2xl text-[#001233]">Management</h1>
+              <button
+                onClick={() => {
+                  setEditingMgt(null);
+                  setMgtForm({ name: '', designation: '', order: management.length + 1 });
+                  setShowMgtModal(true);
+                }}
+                className="flex items-center gap-2 px-4 py-2 bg-[#001233] text-[#FDF6E3] rounded text-sm hover:bg-[#001a45] transition-colors"
+              >
+                <Plus size={16} />
+                <span>Add Member</span>
+              </button>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="bg-[#001233] text-[#FDF6E3]">
+                      <th className="px-4 py-3 text-left text-sm font-cinzel">Order</th>
+                      <th className="px-4 py-3 text-left text-sm font-cinzel">Name</th>
+                      <th className="px-4 py-3 text-left text-sm font-cinzel">Designation</th>
+                      <th className="px-4 py-3 text-left text-sm font-cinzel">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {management.map((member) => (
+                      <tr key={member._id} className="border-b border-gray-100 hover:bg-gray-50">
+                        <td className="px-4 py-3 text-sm text-[#6C757D]">{member.order}</td>
+                        <td className="px-4 py-3 text-sm text-[#001233] font-medium">{member.name}</td>
+                        <td className="px-4 py-3 text-sm text-[#6C757D]">{member.designation}</td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-2">
+                            <button onClick={() => editManagement(member)} className="p-1 text-blue-600 hover:bg-blue-50 rounded">
+                              <Edit size={14} />
+                            </button>
+                            <button onClick={() => deleteManagement(member._id)} className="p-1 text-red-600 hover:bg-red-50 rounded">
                               <Trash2 size={14} />
                             </button>
                           </div>
@@ -689,6 +802,41 @@ export default function AdminDashboard() {
             <div className="flex justify-end gap-3 p-4 border-t">
               <button onClick={() => setShowAnnModal(false)} className="px-4 py-2 border border-gray-300 rounded text-sm hover:bg-gray-50">Cancel</button>
               <button onClick={saveAnnouncement} className="flex items-center gap-2 px-4 py-2 bg-[#001233] text-[#FDF6E3] rounded text-sm hover:bg-[#001a45]">
+                <Save size={14} />
+                Save
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Management Modal */}
+      {showMgtModal && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-white rounded-lg w-full max-w-lg">
+            <div className="flex items-center justify-between p-4 border-b">
+              <h2 className="font-cinzel text-lg text-[#001233]">{editingMgt ? 'Edit' : 'Add'} Management Member</h2>
+              <button onClick={() => setShowMgtModal(false)} className="p-1 hover:bg-gray-100 rounded">
+                <X size={18} />
+              </button>
+            </div>
+            <div className="p-4 space-y-4">
+              <div>
+                <label className="block text-sm text-[#6C757D] mb-1">Name *</label>
+                <input type="text" value={mgtForm.name} onChange={(e) => setMgtForm({ ...mgtForm, name: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#D4A373]" />
+              </div>
+              <div>
+                <label className="block text-sm text-[#6C757D] mb-1">Designation *</label>
+                <input type="text" value={mgtForm.designation} onChange={(e) => setMgtForm({ ...mgtForm, designation: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#D4A373]" />
+              </div>
+              <div>
+                <label className="block text-sm text-[#6C757D] mb-1">Order (Sort index)</label>
+                <input type="number" value={mgtForm.order} onChange={(e) => setMgtForm({ ...mgtForm, order: parseInt(e.target.value) })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#D4A373]" />
+              </div>
+            </div>
+            <div className="flex justify-end gap-3 p-4 border-t">
+              <button onClick={() => setShowMgtModal(false)} className="px-4 py-2 border border-gray-300 rounded text-sm hover:bg-gray-50">Cancel</button>
+              <button onClick={saveManagement} className="flex items-center gap-2 px-4 py-2 bg-[#001233] text-[#FDF6E3] rounded text-sm hover:bg-[#001a45]">
                 <Save size={14} />
                 Save
               </button>

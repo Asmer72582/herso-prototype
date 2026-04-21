@@ -4,6 +4,7 @@ const Announcement = require('../models/Announcement');
 const GalleryImage = require('../models/GalleryImage');
 const HeroSlide = require('../models/HeroSlide');
 const ContactMessage = require('../models/ContactMessage');
+const ManagementMember = require('../models/ManagementMember');
 const { authMiddleware, adminMiddleware } = require('../middleware/auth');
 const { upload, uploadPdf } = require('../middleware/upload');
 const router = express.Router();
@@ -214,6 +215,7 @@ router.get('/stats', async (req, res) => {
     const totalAnnouncements = await Announcement.countDocuments();
     const totalGalleryImages = await GalleryImage.countDocuments();
     const totalMessages = await ContactMessage.countDocuments();
+    const totalManagementMembers = await ManagementMember.countDocuments();
     const publicationsByYear = await Publication.aggregate([
       { $group: { _id: '$year', count: { $sum: 1 } } },
       { $sort: { _id: -1 } }
@@ -224,7 +226,7 @@ router.get('/stats', async (req, res) => {
       .select('name email subject createdAt');
     res.json({
       success: true,
-      stats: { totalPublications, totalAnnouncements, totalGalleryImages, totalMessages, publicationsByYear, recentMessages }
+      stats: { totalPublications, totalAnnouncements, totalGalleryImages, totalMessages, totalManagementMembers, publicationsByYear, recentMessages }
     });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
